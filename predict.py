@@ -25,10 +25,23 @@ classifier = load_model(classifier,"models/model.pkl")
 def classify(text: str):
     tokens = word_tokenize(text)
     tokens = cleanhtml(tokens)
+    fixed_text = " ".join(tokens)
     tokens = [word2idx.get(token,0) for token in tokens]
     tokens = torch.tensor(tokens).expand(1,-1)
     seq_len = torch.tensor([len(tokens)])
     _,labels = classifier(tokens,seq_len)
-    label = torch.argmax(labels,dim=1).item()
-    label = label2idx[label]
-    return label
+    labels = torch.softmax(labels,dim=1)
+    labels = labels.detach().numpy().tolist()[0]
+    # import ipdb; ipdb.set_trace()
+    intent_ranking = []
+    intent = {}
+    for i, out in enumerate(labels):
+            temp = {"confidence": float(format(out, 'f')), "name": label2idx[i]}
+            intent_ranking.append(temp)
+    intent_ranking = sorted(intent_ranking, key=lambda e: e['confidence'], reverse=True)
+    intent.update({
+                "intent": intent_ranking.pop(0),
+                "intent_ranking": intent_ranking
+    })
+    intent.update({"processed_text": fixed_text})
+    return intent
