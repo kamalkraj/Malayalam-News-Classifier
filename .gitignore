@@ -107,4 +107,5 @@ temp/
 *.csv
 *.pt
 *.npy
+*.pkl
 .vscode/

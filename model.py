@@ -71,7 +71,10 @@ class MalayalamModel(nn.Module):
         num_layers = 1
         hidden_dim = 100
         dropout = 0.5
-        self.embed = nn.Embedding.from_pretrained(pretrained_embed, freeze=False)
+        if pretrained_embed:
+            self.embed = nn.Embedding.from_pretrained(pretrained_embed, freeze=False)
+        else:
+            self.embed = nn.Embedding(96055,embed_dim)
         self.embed.padding_idx = padding_idx
         self.lstm = DynamicLSTM(embed_dim, hidden_dim, num_layers=num_layers,dropout=dropout, bidirectional=True)
         self.out = nn.Linear(hidden_dim*2, num_classes)

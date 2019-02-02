@@ -76,3 +76,5 @@ for epoch in range(epochs):
             _,prediction = classifier(text,text_len)
             test_predict.extend(torch.argmax(prediction,dim=1).to('cpu').numpy().tolist())
     print("testing Accuracy : ",accuracy_score(test_true,test_predict))
+
+save_model(classifier,"models/model.pkl")

@@ -3,6 +3,7 @@ import re
 
 import nltk
 import torchtext
+import torch
 
 
 re1 = re.compile(r'  +')
@@ -27,7 +28,7 @@ def cleanhtml(raw_html):
         cleantext.append(fixup(cleantext_tmp))
     return cleantext
 
-def preprocessing(train_path: str, test_path: str, embedding_path: str, minimum_freq: int = 2,max_sent_len: int = 100):
+def preprocessing(train_path: str, test_path: str, embedding_path: str, minimum_freq: int = 2,max_sent_len: int = 100,save="models/word2idx.pkl"):
     """ Data Loading and Preprocessing"""
     text = torchtext.data.Field(sequential=True, use_vocab=True, lower=False,tokenize=nltk.word_tokenize,init_token="</bos>",eos_token="</eos>",preprocessing=cleanhtml, batch_first=True,is_target=False, fix_length=max_sent_len,include_lengths=True)
     target = torchtext.data.Field(sequential=False, use_vocab=False,batch_first=True, is_target=True)
@@ -42,6 +43,7 @@ def preprocessing(train_path: str, test_path: str, embedding_path: str, minimum_
     
     # Split Train Data to train, validation sets
     data_train, data_val = dataset.split(split_ratio=0.9)
+    torch.save(dict(text.vocab.stoi),save)
 
     print("train set size:", len(data_train))
     print("val set size:", len(data_val))
