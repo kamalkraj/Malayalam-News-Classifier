@@ -1,0 +1,6 @@
+torch == 1.0.0
+torchtext
+nltk
+sklearn == 0.20.2
+flask
+flask_cors
