@@ -64,14 +64,14 @@ class DynamicLSTM(nn.Module):
 
 class MalayalamModel(nn.Module):
     
-    def __init__(self,pretrained_embed,padding_idx):
+    def __init__(self,pretrained_embed,padding_idx,pretrained_embed_load=True):
         super(MalayalamModel, self).__init__()
         embed_dim = 200
         num_classes = 6
         num_layers = 1
         hidden_dim = 100
         dropout = 0.5
-        if pretrained_embed:
+        if pretrained_embed_load:
             self.embed = nn.Embedding.from_pretrained(pretrained_embed, freeze=False)
         else:
             self.embed = nn.Embedding(96055,embed_dim)
